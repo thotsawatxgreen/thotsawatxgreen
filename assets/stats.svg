@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="96" viewBox="0 0 480 96" role="img" aria-label="Pull requests 207, reviews 144, contributions 2026 685">
+  <style>
+    .card { fill: #f6f8fa; }
+    .label { font: 400 13px -apple-system, Segoe UI, Helvetica, Arial, sans-serif; fill: #57606a; }
+    .value { font: 600 26px -apple-system, Segoe UI, Helvetica, Arial, sans-serif; fill: #1f2328; }
+    @media (prefers-color-scheme: dark) {
+      .card { fill: #161b22; }
+      .label { fill: #8b949e; }
+      .value { fill: #e6edf3; }
+    }
+  </style>
+  <rect class="card" x="0" y="0" width="152" height="96" rx="8"/>
+  <rect class="card" x="164" y="0" width="152" height="96" rx="8"/>
+  <rect class="card" x="328" y="0" width="152" height="96" rx="8"/>
+  <text class="label" x="16" y="32">Pull requests</text>
+  <text class="value" x="16" y="70">207</text>
+  <text class="label" x="180" y="32">Reviews</text>
+  <text class="value" x="180" y="70">144</text>
+  <text class="label" x="344" y="32">Contributions 2026</text>
+  <text class="value" x="344" y="70">685</text>
+</svg>
