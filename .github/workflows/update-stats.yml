@@ -16,6 +16,7 @@ jobs:
       - name: Generate stats
         env:
           GH_TOKEN: ${{ secrets.STATS_TOKEN }}
+          STATS_LOGINS: thotsawatxgreen jfornqz
         run: ./scripts/update-stats.sh
       - name: Commit if changed
         run: |

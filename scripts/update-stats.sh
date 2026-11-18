@@ -1,16 +1,32 @@
 #!/usr/bin/env bash
-# Writes assets/stats.svg with PR, review and yearly contribution totals.
+# Writes assets/stats.svg with PR, review and yearly contribution totals,
+# summed across every account in STATS_LOGINS (space separated).
 # Needs GH_TOKEN (or a logged-in gh) that can read the repos to be counted.
 # Prints totals only; never prints repo or PR names.
 set -euo pipefail
 
-login="$(gh api user --jq .login)"
+logins="${STATS_LOGINS:-$(gh api user --jq .login)}"
 year="$(date -u +%Y)"
 
-pull_requests="$(gh api "search/issues?q=type:pr+author:${login}&per_page=1" --jq .total_count)"
-reviews="$(gh api "search/issues?q=type:pr+reviewed-by:${login}+-author:${login}&per_page=1" --jq .total_count)"
-contributions="$(gh api graphql -f query="{viewer{contributionsCollection(from:\"${year}-01-01T00:00:00Z\"){contributionCalendar{totalContributions}}}}" \
-  --jq .data.viewer.contributionsCollection.contributionCalendar.totalContributions)"
+authors=""
+reviewers=""
+not_authors=""
+for login in $logins; do
+  authors+="+author:${login}"
+  reviewers+="+reviewed-by:${login}"
+  not_authors+="+-author:${login}"
+done
+
+# Qualifiers of the same kind are OR'd by GitHub search, so each PR is counted once.
+pull_requests="$(gh api "search/issues?q=type:pr${authors}&per_page=1" --jq .total_count)"
+reviews="$(gh api "search/issues?q=type:pr${reviewers}${not_authors}&per_page=1" --jq .total_count)"
+
+contributions=0
+for login in $logins; do
+  count="$(gh api graphql -f query="{user(login:\"${login}\"){contributionsCollection(from:\"${year}-01-01T00:00:00Z\"){contributionCalendar{totalContributions}}}}" \
+    --jq .data.user.contributionsCollection.contributionCalendar.totalContributions)"
+  contributions=$((contributions + count))
+done
 
 output="$(dirname "$0")/../assets/stats.svg"
 cat > "$output" <<SVG
